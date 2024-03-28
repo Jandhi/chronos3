@@ -1,38 +1,16 @@
-use std::marker::PhantomData;
 
-use super::{consonant::{MOA, POA}, vowel::{Backness, Height, Length}};
+use std::rc::Rc;
 
+use super::{consonant::ConsonantFeature, vowel::VowelFeature};
+
+#[derive(Debug, Clone)]
 pub enum Feature {
     Vowel(VowelFeature),
-    Consonant(ConsonantFeature)
+    Consonant(ConsonantFeature),
+    Custom(CustomFeature)
 }
 
-pub enum VowelFeature {
-    Vowel,
-    Backness(Backness),
-    Height(Height),
-    Length(Length),
-    Optional(OptionalVowelFeature),
-}
-
-#[derive(PartialEq, Eq)]
-pub enum OptionalVowelFeature {
-    Rounded,    
-    Nasalized,
-}
-
-pub enum ConsonantFeature {
-    Consonant,
-    POA(POA),
-    MOA(MOA),
-    Optional(OptionalConsonantFeature)
-}
-
-#[derive(PartialEq, Eq)]
-pub enum OptionalConsonantFeature {
-    Voiced,
-    Aspirate,
-    Labialized,
-    Palatalized,
-    Glotallized,
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct CustomFeature {
+    pub name : Rc<str>
 }

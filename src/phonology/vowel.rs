@@ -1,42 +1,42 @@
-use super::{feature::{Feature, OptionalVowelFeature, VowelFeature}, has_feature::HasFeature};
+pub mod height;
+pub mod length;
+pub mod backness;
+pub mod optional;
+pub mod builder;
+mod builder_test;
+
+use self::{backness::Backness, height::Height, length::Length, optional::OptionalVowelFeature};
+
+use super::{feature::{CustomFeature, Feature}, feature_traits::{AddFeature, HasFeature}, phone::Phone};
 
 #[derive(Default, PartialEq, Eq)]
 pub struct Vowel {
     pub backness : Backness,
     pub height : Height,
-    pub rounded : bool,
-    pub nasalized : bool,
     pub length : Length,
-    pub features : Vec<OptionalVowelFeature>,
+    pub optional : Vec<OptionalVowelFeature>,
+    pub custom : Vec<CustomFeature>,
 }
 
-#[derive(PartialEq, Eq, Default)]
-pub enum Backness {
-    Front,
-    #[default]
-    Central,
-    Back
+impl Into<Phone> for Vowel {
+    fn into(self) -> Phone {
+        Phone::Vowel(self)
+    }
 }
 
-#[derive(PartialEq, Eq, Default)]
-pub enum Height {
-    High,
-    NearHigh,
-    MidHigh,
-    Mid,
-    MidLow,
-    NearLow,
-    #[default]
-    Low
+#[derive(Debug, Clone, Copy)]
+pub enum VowelFeature {
+    Vowel,
+    Backness(Backness),
+    Height(Height),
+    Length(Length),
+    Optional(OptionalVowelFeature),
 }
 
-#[derive(PartialEq, Eq, Default)]
-pub enum Length {
-    Ultrashort,
-    #[default]
-    Short,
-    Long,
-    Ultralong,
+impl Into<Feature> for VowelFeature {
+    fn into(self) -> Feature {
+        Feature::Vowel(self)
+    }
 }
 
 impl HasFeature for Vowel {
@@ -48,10 +48,27 @@ impl HasFeature for Vowel {
                     VowelFeature::Backness(backness) => self.backness == *backness,
                     VowelFeature::Height(height) => self.height == *height,
                     VowelFeature::Length(length) => self.length == *length,
-                    VowelFeature::Optional(opt) => self.features.contains(&opt),
+                    VowelFeature::Optional(opt) => self.optional.contains(&opt),
                 }
             },
             Feature::Consonant(_) => false,
+            Feature::Custom(str) => self.custom.contains(str),
+        }
+    }
+}
+
+impl AddFeature<VowelFeature> for Vowel {
+    fn add(&mut self, feature : VowelFeature) {
+        match feature {
+            VowelFeature::Vowel => {},
+            VowelFeature::Backness(backness) => self.backness = backness,
+            VowelFeature::Height(height) => self.height = height,
+            VowelFeature::Length(length) => self.length = length,
+            VowelFeature::Optional(opt) => {
+                if !self.optional.contains(&opt) {
+                    self.optional.push(opt);
+                }
+            },
         }
     }
 }

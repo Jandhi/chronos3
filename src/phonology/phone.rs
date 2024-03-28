@@ -1,4 +1,4 @@
-use super::{consonant::Consonant, feature::Feature, has_feature::HasFeature, matcher::Matcher, vowel::Vowel};
+use super::{consonant::Consonant, feature::Feature, feature_traits::HasFeature, matcher::Matchable, vowel::Vowel};
 
 #[derive(PartialEq, Eq)]
 pub enum Phone {
@@ -15,7 +15,7 @@ impl Phone {
     }
 }
 
-impl Matcher for Phone {
+impl Matchable for Phone {
     fn is_match(&self, phone : Phone) -> bool {
         phone == *self
     }
