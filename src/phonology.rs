@@ -6,3 +6,4 @@ pub mod has_feature;
 pub mod matcher;
 pub mod phone;
 pub mod target;
+pub mod word;

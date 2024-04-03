@@ -16,7 +16,7 @@ impl Phone {
 }
 
 impl Matcher for Phone {
-    fn is_match(&self, phone : Phone) -> bool {
-        phone == *self
+    fn is_match(&self, phone : &Phone) -> bool {
+        phone == self
     }
 }

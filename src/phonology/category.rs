@@ -1,4 +1,4 @@
-use super::{feature::Feature, matcher::Matcher};
+use super::{feature::Feature, matcher::Matcher, phone::Phone};
 
 pub struct Category {
     features : Vec<Feature>,
@@ -6,7 +6,7 @@ pub struct Category {
 }
 
 impl Matcher for Category {
-    fn is_match(&self, phone : super::phone::Phone) -> bool {
+    fn is_match(&self, phone : &Phone) -> bool {
         self.features.iter().all(
             |ft| phone.has(ft)
         ) && self.non_features.iter().all(
